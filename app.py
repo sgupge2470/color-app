@@ -28,7 +28,7 @@ settings_path = "saved_settings.json"
 # ユーザー管理
 # ---------------------------
 st.subheader("ユーザー管理")
-username = st.text_input("ユーザー名を入力してください", "user1")
+username = st.text_input("名前を入力してください", "user1")
 
 uploaded_file = st.file_uploader("画像をアップロードしてください", type=["jpg", "jpeg", "png"])
 
@@ -36,7 +36,7 @@ uploaded_file = st.file_uploader("画像をアップロードしてください"
 # 表示名変換
 # ---------------------------
 def label(name):
-    return "正常（適用なし）" if name is None else {
+    return "正常" if name is None else {
         "Protanomaly":  "P型（赤色盲）",
         "Deuteranomaly":"D型（緑色盲）",
         "Tritanomaly": "T型（青色盲）"
@@ -46,7 +46,7 @@ def label(name):
 # UI 部品
 # ---------------------------
 color_type = st.selectbox(
-    "色覚異常のタイプ",
+    "色覚特性のタイプを選択してください",
     [None, "Protanomaly", "Deuteranomaly", "Tritanomaly"],
     format_func=label,
     index=2
@@ -54,11 +54,11 @@ color_type = st.selectbox(
 
 severity = st.slider("重症度", 0.0, 1.0, 1.0, 0.05)
 
-st.subheader("RGB ゲイン（0〜200%）")
+st.subheader("細かい調整(数字が大きければ強くなる)")
 col_r, col_g, col_b = st.columns(3)
-r_gain = col_r.slider("R", 0.0, 2.0, 1.0, 0.05)
-g_gain = col_g.slider("G", 0.0, 2.0, 1.0, 0.05)
-b_gain = col_b.slider("B", 0.0, 2.0, 1.0, 0.05)
+r_gain = col_r.slider("赤色", 0.0, 2.0, 1.0, 0.05)
+g_gain = col_g.slider("緑色", 0.0, 2.0, 1.0, 0.05)
+b_gain = col_b.slider("青色", 0.0, 2.0, 1.0, 0.05)
 
 # ---------------------------
 # 画像処理
@@ -82,9 +82,9 @@ if uploaded_file:
         )
 
 # ---------------------------
-# 補正値の保存（保存だけ）
+# 補正値の保存
 # ---------------------------
-preset_name = st.text_input("補正値の名前", "私の補正値")
+preset_name = st.text_input("補正値の名前", "〇〇の補正値")
 if st.button("この補正値を保存する"):
     if not username or username.strip() == "":
         st.error("ユーザー名を入力してください")
