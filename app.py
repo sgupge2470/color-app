@@ -13,7 +13,7 @@ MAX_WIDTH = 800
 
 # ===== ユーザー管理 =====
 st.subheader("ユーザー管理")
-username = st.text_input("名前を入力してください", "user1")
+username = st.text_input("名前を入力してください", "")
 uploaded_file = st.file_uploader("画像をアップロードしてください", type=["jpg", "jpeg", "png"])
 
 # ===== 色覚タイプ選択 =====
@@ -31,15 +31,17 @@ color_type = st.selectbox(
     index=2
 )
 
-severity = st.slider("重症度", 0.0, 1.0, 1.0, 0.05)
+
 
 # ===== RGB補正 =====
-st.subheader("細かい調整（Linear RGB 空間で補正）")
+st.subheader("細かい調整（数字が大きいほど色が強くなる）")
 col_r, col_g, col_b = st.columns(3)
 r_gain = col_r.slider("赤色", 0.0, 2.0, 1.0, 0.05)
 g_gain = col_g.slider("緑色", 0.0, 2.0, 1.0, 0.05)
 b_gain = col_b.slider("青色", 0.0, 2.0, 1.0, 0.05)
 
+#重症度
+severity = st.slider("重症度", 0.0, 1.0, 1.0, 0.05)
 # ===== 画像処理 =====
 if uploaded_file:
     src = Image.open(uploaded_file).convert("RGB")
@@ -74,7 +76,7 @@ if st.button("この補正値を保存する"):
             "青": b_gain,
         }
         save_settings(settings_path, username, data)
-        st.success(f"{username} の新しいプリセットを保存しました！")
+        st.success(f"{username} の新しい補正値を保存しました！")
 
         # ダウンロード用JSON
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
@@ -89,4 +91,5 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
 
