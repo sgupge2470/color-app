@@ -94,6 +94,28 @@ if st.button("この補正値を保存する"):
             mime="application/json"
         )
 
+import streamlit as st
+import json
+import os
+
+st.title("Saved Settings Viewer")
+
+# ファイルが存在するか確認
+file_path = "saved_settings.json"
+if os.path.exists(file_path):
+    try:
+        # JSONを読み込む
+        with open(file_path, "r") as f:
+            data = json.load(f)
+        st.subheader("JSON 内容")
+        st.json(data)  # 見やすくツリー表示
+    except Exception as e:
+        st.error(f"ファイルの読み込みに失敗しました: {e}")
+else:
+    st.warning(f"{file_path} が存在しません。")
+
+
+
 
 
 
