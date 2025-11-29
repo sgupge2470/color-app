@@ -26,9 +26,9 @@ uploaded_file = st.file_uploader("画像をアップロードしてください"
 # ===== 表示名変換 =====
 def label(name):
     return "正常" if name is None else {
-        "Protanomaly": "P型（赤）",
-        "Deuteranomaly":"D型（緑）",
-        "Tritanomaly":  "T型（青）"
+        "Protanomaly": "P型（赤色盲）",
+        "Deuteranomaly":"D型（緑色盲）",
+        "Tritanomaly":  "T型（青色盲）"
     }[name]
 
 # ===== UI =====
@@ -41,7 +41,7 @@ color_type = st.selectbox(
 
 severity = st.slider("重症度", 0.0, 1.0, 1.0, 0.05)
 
-st.subheader("細かい調整（Linear RGB 空間で補正）")
+st.subheader("細かい調整（数字が大きいほど色が強くなる）")
 col_r, col_g, col_b = st.columns(3)
 r_gain = col_r.slider("赤色", 0.0, 2.0, 1.0, 0.05)
 g_gain = col_g.slider("緑色", 0.0, 2.0, 1.0, 0.05)
@@ -93,6 +93,7 @@ if st.button("この補正値を保存する"):
             file_name=f"{username}_{preset_name}.json",
             mime="application/json"
         )
+
 
 
 
