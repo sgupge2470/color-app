@@ -12,7 +12,7 @@ settings_path = "saved_settings.json"
 MAX_WIDTH = 800
 
 # ===== ユーザー管理 =====
-st.subheader("ユーザー管理")
+st.subheader("ユーザー登録")
 username = st.text_input("名前を入力してください", "")
 uploaded_file = st.file_uploader("画像をアップロードしてください", type=["jpg", "jpeg", "png"])
 
@@ -92,6 +92,7 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
 
 
 
