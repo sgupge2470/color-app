@@ -64,7 +64,7 @@ if uploaded_file:
     with col1:
         st.image(proc_img, caption="元の画像", use_column_width=True)
 
-    sim = machado(proc_img, color_type, severity)
+    sim = machado(proc_img, cvd_type, severity)
     out = rgb_gain(sim, r_gain, g_gain, b_gain)
 
     display_img = out.copy()
@@ -102,6 +102,7 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
 
 
 
