@@ -49,7 +49,17 @@ if uploaded_file:
     proc_img = src.copy()
     if max(proc_img.size) > MAX_WIDTH:
         proc_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
+    # 日本語 → Machado用の英語キーへ変換
+    cvd_map = {
+        None: None,
+        "赤色盲": "protanomaly",
+        "緑色盲": "deuteranomaly",
+        "青色盲": "tritanomaly"
+    }
+    
+    cvd_type = cvd_map[color_type]
 
+    
     col1, col2 = st.columns(2)
     with col1:
         st.image(proc_img, caption="元の画像", use_column_width=True)
@@ -92,6 +102,7 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
 
 
 
