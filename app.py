@@ -4,6 +4,9 @@ from utils.image_processing import machado, rgb_gain
 from utils.storage import save_settings, get_user_presets, load_settings
 import os
 import json
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__)))
 
 st.set_page_config(page_title="色覚特性シミュレーション", layout="centered")
 st.title("色覚特性シミュレーションアプリ")
@@ -100,3 +103,4 @@ if uploaded_json is not None:
             st.success(f"{username} に JSON から補正値を読み込みました！")
     except Exception as e:
         st.error(f"JSONの読み込みに失敗しました: {e}")
+
