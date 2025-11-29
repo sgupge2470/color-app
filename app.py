@@ -1,9 +1,3 @@
-import sys
-import os
-
-# app.py のあるディレクトリをパスに追加
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 import streamlit as st
 from PIL import Image
 from utils.image_processing import machado, rgb_gain
@@ -11,27 +5,25 @@ from utils.storage import save_settings, get_user_presets, load_settings
 import os
 import json
 
-
 st.set_page_config(page_title="色覚特性シミュレーション", layout="centered")
 st.title("色覚特性シミュレーションアプリ")
 
 settings_path = "saved_settings.json"
-MAX_WIDTH = 800  # 内部処理用最大幅
+MAX_WIDTH = 800
 
 # ===== ユーザー管理 =====
 st.subheader("ユーザー管理")
 username = st.text_input("名前を入力してください", "user1")
 uploaded_file = st.file_uploader("画像をアップロードしてください", type=["jpg", "jpeg", "png"])
 
-# ===== 表示名変換 =====
+# ===== 色覚タイプ選択 =====
 def label(name):
     return "正常" if name is None else {
-        "Protanomaly": "P型（赤色盲）",
-        "Deuteranomaly":"D型（緑色盲）",
-        "Tritanomaly":  "T型（青色盲）"
+        "Protanomaly": "P型（赤）",
+        "Deuteranomaly":"D型（緑）",
+        "Tritanomaly":  "T型（青）"
     }[name]
 
-# ===== UI =====
 color_type = st.selectbox(
     "色覚特性のタイプを選択してください",
     [None, "Protanomaly", "Deuteranomaly", "Tritanomaly"],
@@ -41,7 +33,8 @@ color_type = st.selectbox(
 
 severity = st.slider("重症度", 0.0, 1.0, 1.0, 0.05)
 
-st.subheader("細かい調整（数字が大きいほど色が強くなる）")
+# ===== RGB補正 =====
+st.subheader("細かい調整（Linear RGB 空間で補正）")
 col_r, col_g, col_b = st.columns(3)
 r_gain = col_r.slider("赤色", 0.0, 2.0, 1.0, 0.05)
 g_gain = col_g.slider("緑色", 0.0, 2.0, 1.0, 0.05)
@@ -50,8 +43,6 @@ b_gain = col_b.slider("青色", 0.0, 2.0, 1.0, 0.05)
 # ===== 画像処理 =====
 if uploaded_file:
     src = Image.open(uploaded_file).convert("RGB")
-
-    # 内部処理用に縮小
     proc_img = src.copy()
     if max(proc_img.size) > MAX_WIDTH:
         proc_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
@@ -69,7 +60,7 @@ if uploaded_file:
         st.image(display_img, caption=f"{label(color_type)} + RGB補正", use_column_width=True)
 
 # ===== 保存 & ダウンロード =====
-preset_name = st.text_input("補正値の名前", "例：紅葉の補正値")
+preset_name = st.text_input("補正値の名前", "〇〇の補正値")
 if st.button("この補正値を保存する"):
     if not username.strip():
         st.error("ユーザー名を入力してください")
@@ -94,32 +85,7 @@ if st.button("この補正値を保存する"):
             mime="application/json"
         )
 
-import streamlit as st
-import json
-import os
-
-st.title("Saved Settings Viewer")
-
-# ファイルが存在するか確認
-file_path = "saved_settings.json"
-if os.path.exists(file_path):
-    try:
-        # JSONを読み込む
-        with open(file_path, "r") as f:
-            data = json.load(f)
-        st.subheader("JSON 内容")
-        st.json(data)  # 見やすくツリー表示
-    except Exception as e:
-        st.error(f"ファイルの読み込みに失敗しました: {e}")
-else:
-    st.warning(f"{file_path} が存在しません。")
-
-
-
-
-
-
-
-
-
-
+# ===== 管理者用全ユーザー確認 =====
+st.subheader("全ユーザー補正値の確認")
+all_settings = load_settings(settings_path)
+st.json(all_settings)
