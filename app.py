@@ -41,6 +41,7 @@ g_gain = col_g.slider("緑色", 0.0, 2.0, 1.0, 0.05)
 b_gain = col_b.slider("青色", 0.0, 2.0, 1.0, 0.05)
 
 #重症度
+st.subheader("重症度（なるべく１のまま）")
 severity = st.slider("重症度", 0.0, 1.0, 1.0, 0.05)
 # ===== 画像処理 =====
 if uploaded_file:
@@ -91,5 +92,6 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
 
 
