@@ -19,14 +19,14 @@ uploaded_file = st.file_uploader("画像をアップロードしてください"
 # ===== 色覚タイプ選択 =====
 def label(name):
     return "正常" if name is None else {
-        "Protanomaly": "P型（赤）",
-        "Deuteranomaly":"D型（緑）",
-        "Tritanomaly":  "T型（青）"
+        "赤色盲": "P型（赤色盲）",
+        "緑色盲":"D型（緑色盲）",
+        "青色盲":  "T型（青色盲）"
     }[name]
 
 color_type = st.selectbox(
     "色覚特性のタイプを選択してください",
-    [None, "Protanomaly", "Deuteranomaly", "Tritanomaly"],
+    [None, "赤色盲", "緑色盲", "青色盲"],
     format_func=label,
     index=2
 )
@@ -66,12 +66,12 @@ if st.button("この補正値を保存する"):
         st.error("ユーザー名を入力してください")
     else:
         data = {
-            "preset_name": preset_name,
-            "type": color_type,
-            "severity": severity,
-            "r_gain": r_gain,
-            "g_gain": g_gain,
-            "b_gain": b_gain,
+            "名前": preset_name,
+            "型": color_type,
+            "重症度": severity,
+            "赤": r_gain,
+            "緑": g_gain,
+            "青": b_gain,
         }
         save_settings(settings_path, username, data)
         st.success(f"{username} の新しいプリセットを保存しました！")
@@ -89,3 +89,4 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
