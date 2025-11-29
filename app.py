@@ -73,7 +73,7 @@ if uploaded_file:
         st.image(display_img, caption=f"{label(color_type)} + RGB補正", use_column_width=True)
 
 # ===== 保存 & ダウンロード =====
-preset_name = st.text_input("補正値の名前", "〇〇の補正値")
+preset_name = st.text_input("補正値の名前", "例：紅葉の補正値")
 if st.button("この補正値を保存する"):
     if not username.strip():
         st.error("ユーザー名を入力してください")
@@ -87,7 +87,7 @@ if st.button("この補正値を保存する"):
             "青": b_gain,
         }
         save_settings(settings_path, username, data)
-        st.success(f"{username} の新しい補正値を保存しました！")
+        st.success(f"{username} さんの新しい補正値を保存しました！")
 
         # ダウンロード用JSON
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
@@ -102,6 +102,7 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
 
 
 
