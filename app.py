@@ -1,15 +1,15 @@
 import streamlit as st
 from PIL import Image
 from utils.image_processing import machado, rgb_gain
-from utils.storage import save_settings
+from utils.storage import save_settings, get_user_presets, load_settings
 import os
+import json
 
 st.set_page_config(page_title="色覚特性シミュレーション", layout="centered")
 st.title("色覚特性シミュレーションアプリ")
 
 settings_path = "saved_settings.json"
-
-MAX_WIDTH = 800  # 内部処理用の最大幅
+MAX_WIDTH = 800  # 内部処理用最大幅
 
 # ===== ユーザー管理 =====
 st.subheader("ユーザー管理")
@@ -19,9 +19,9 @@ uploaded_file = st.file_uploader("画像をアップロードしてください"
 # ===== 表示名変換 =====
 def label(name):
     return "正常" if name is None else {
-        "Protanomaly": "P型（赤色盲）",
-        "Deuteranomaly":"D型（緑色盲）",
-        "Tritanomaly":  "T型（青色盲）"
+        "Protanomaly": "P型（赤）",
+        "Deuteranomaly":"D型（緑）",
+        "Tritanomaly":  "T型（青）"
     }[name]
 
 # ===== UI =====
@@ -53,18 +53,16 @@ if uploaded_file:
     with col1:
         st.image(proc_img, caption="元の画像", use_column_width=True)
 
-    # Machado法（Linear RGB 空間で計算）
     sim = machado(proc_img, color_type, severity)
-    out = rgb_gain(sim, r_gain, g_gain, b_gain)  # 常にLinear RGB補正
+    out = rgb_gain(sim, r_gain, g_gain, b_gain)
 
-    # 表示用にさらに縮小して軽量化
     display_img = out.copy()
     display_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
     with col2:
         st.image(display_img, caption=f"{label(color_type)} + RGB補正", use_column_width=True)
 
-# ===== 保存 =====
-preset_name = st.text_input("補正値の名前", "例：紅葉の補正値")
+# ===== 保存 & ダウンロード =====
+preset_name = st.text_input("補正値の名前", "〇〇の補正値")
 if st.button("この補正値を保存する"):
     if not username.strip():
         st.error("ユーザー名を入力してください")
@@ -78,4 +76,27 @@ if st.button("この補正値を保存する"):
             "b_gain": b_gain,
         }
         save_settings(settings_path, username, data)
-        st.success(f"{username} さんの新しいプリセットを保存しました！")
+        st.success(f"{username} の新しいプリセットを保存しました！")
+
+        # ダウンロード用JSON
+        json_str = json.dumps(data, ensure_ascii=False, indent=2)
+        st.download_button(
+            label="この補正値をJSONでダウンロード",
+            data=json_str,
+            file_name=f"{username}_{preset_name}.json",
+            mime="application/json"
+        )
+
+# ===== JSONアップロード =====
+st.subheader("JSONから補正値を読み込む")
+uploaded_json = st.file_uploader("保存済み補正値JSONを選択", type=["json"], key="upload_json")
+if uploaded_json is not None:
+    try:
+        loaded_data = json.load(uploaded_json)
+        if not username.strip():
+            st.error("ユーザー名を入力してください")
+        else:
+            save_settings(settings_path, username, loaded_data)
+            st.success(f"{username} に JSON から補正値を読み込みました！")
+    except Exception as e:
+        st.error(f"JSONの読み込みに失敗しました: {e}")
