@@ -1,24 +1,32 @@
 import json
 import os
 
-def load_settings(filepath):
-    if not os.path.exists(filepath):
+def load_settings(settings_path="saved_settings.json"):
+    """全ユーザーの補正値を読み込む"""
+    if not os.path.exists(settings_path):
         return {}
-    with open(filepath, "r", encoding="utf-8") as f:
+    with open(settings_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def save_settings(filepath, username, data):
-    all_data = load_settings(filepath)
+def save_settings(settings_path, username, data):
+    """ユーザー補正値を追記して保存"""
+    settings = load_settings(settings_path)
+    
+    if username not in settings:
+        settings[username] = []
+    
+    # 同名プリセットがあれば上書き
+    for i, preset in enumerate(settings[username]):
+        if preset["preset_name"] == data["preset_name"]:
+            settings[username][i] = data
+            break
+    else:
+        settings[username].append(data)
 
-    # ユーザー単位にリストで保存
-    if username not in all_data:
-        all_data[username] = []
+    with open(settings_path, "w", encoding="utf-8") as f:
+        json.dump(settings, f, ensure_ascii=False, indent=2)
 
-    all_data[username].append(data)
-
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(all_data, f, ensure_ascii=False, indent=2)
-
-def get_user_presets(filepath, username):
-    all_data = load_settings(filepath)
-    return all_data.get(username, [])
+def get_user_presets(settings_path, username):
+    """特定ユーザーの補正値一覧を取得"""
+    settings = load_settings(settings_path)
+    return settings.get(username, [])
