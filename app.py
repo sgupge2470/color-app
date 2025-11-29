@@ -91,18 +91,6 @@ if st.button("この補正値を保存する"):
             mime="application/json"
         )
 
-# ===== JSONアップロード =====
-st.subheader("JSONから補正値を読み込む")
-uploaded_json = st.file_uploader("保存済み補正値JSONを選択", type=["json"], key="upload_json")
-if uploaded_json is not None:
-    try:
-        loaded_data = json.load(uploaded_json)
-        if not username.strip():
-            st.error("ユーザー名を入力してください")
-        else:
-            save_settings(settings_path, username, loaded_data)
-            st.success(f"{username} に JSON から補正値を読み込みました！")
-    except Exception as e:
-        st.error(f"JSONの読み込みに失敗しました: {e}")
+
 
 
