@@ -120,7 +120,7 @@ if uploaded_file:
 # ============================
 # 保存 & ダウンロード
 # ============================
-preset_name = st.text_input("補正値の名前", "例：紅葉の補正値")
+preset_name = st.text_input("補正値の名前（同じ名前の場合上書き保存されます）", "例：紅葉の補正値")
 
 if st.button("この補正値を保存する"):
     if not username.strip():
@@ -152,5 +152,6 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認（管理者用）")
 all_settings = load_settings()
 st.json(all_settings)
+
 
 
