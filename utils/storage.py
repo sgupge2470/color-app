@@ -1,93 +1,32 @@
-import sqlite3
 import json
-from datetime import datetime
+import os
 
-DB_PATH = "settings.db"
+def load_settings(settings_path="saved_settings.json"):
+    """全ユーザーの補正値を読み込む"""
+    if not os.path.exists(settings_path):
+        return {}
+    with open(settings_path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-# -------------------------------
-# DB初期化（最初に1回だけ実行されればOK）
-# -------------------------------
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS presets (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT,
-            preset_name TEXT,
-            data TEXT,
-            created_at TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-
-# -------------------------------
-# 保存（JSON方式の上位互換）
-# -------------------------------
-def save_settings(username, data):
-    """
-    data は今まで通りの辞書：
-    {
-        "名前": "...",
-        "R": 0.1,
-        "G": 0.2,
-        ...
-    }
-    """
-    preset_name = data.get("名前")
-
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    # 同名プリセットがあれば上書き
-    c.execute("""
-        SELECT id FROM presets
-        WHERE username = ? AND preset_name = ?
-    """, (username, preset_name))
-
-    row = c.fetchone()
-
-    if row:
-        c.execute("""
-            UPDATE presets
-            SET data = ?, created_at = ?
-            WHERE id = ?
-        """, (
-            json.dumps(data, ensure_ascii=False),
-            datetime.now().isoformat(),
-            row[0]
-        ))
+def save_settings(settings_path, username, data):
+    """ユーザー補正値を追記して保存（日本語キー対応）"""
+    settings = load_settings(settings_path)
+    
+    if username not in settings:
+        settings[username] = []
+    
+    # 同名プリセットがあれば上書き（"名前" で比較）
+    for i, preset in enumerate(settings[username]):
+        if preset.get("名前") == data.get("名前"):
+            settings[username][i] = data
+            break
     else:
-        c.execute("""
-            INSERT INTO presets (username, preset_name, data, created_at)
-            VALUES (?, ?, ?, ?)
-        """, (
-            username,
-            preset_name,
-            json.dumps(data, ensure_ascii=False),
-            datetime.now().isoformat()
-        ))
+        settings[username].append(data)
 
-    conn.commit()
-    conn.close()
+    with open(settings_path, "w", encoding="utf-8") as f:
+        json.dump(settings, f, ensure_ascii=False, indent=2)
 
-
-# -------------------------------
-# 読み込み（今までと同じ使い方）
-# -------------------------------
-def get_user_presets(username):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-
-    c.execute("""
-        SELECT data FROM presets
-        WHERE username = ?
-        ORDER BY created_at DESC
-    """, (username,))
-
-    rows = c.fetchall()
-    conn.close()
-
-    return [json.loads(row[0]) for row in rows]
+def get_user_presets(settings_path, username):
+    """特定ユーザーの補正値一覧を取得"""
+    settings = load_settings(settings_path)
+    return settings.get(username, [])
