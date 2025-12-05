@@ -10,6 +10,24 @@ import json
 init_db()
 
 # ============================
+# セッション初期化（最重要）
+# ============================
+if "prev_image_name" not in st.session_state:
+    st.session_state.prev_image_name = None
+
+if "r_gain" not in st.session_state:
+    st.session_state.r_gain = 1.0
+
+if "g_gain" not in st.session_state:
+    st.session_state.g_gain = 1.0
+
+if "b_gain" not in st.session_state:
+    st.session_state.b_gain = 1.0
+
+if "severity" not in st.session_state:
+    st.session_state.severity = 1.0
+
+# ============================
 # アプリ基本設定
 # ============================
 st.set_page_config(page_title="色覚特性シミュレーション", layout="centered")
@@ -23,6 +41,17 @@ MAX_WIDTH = 800
 st.subheader("ユーザー登録")
 username = st.text_input("名前を入力してください", "")
 uploaded_file = st.file_uploader("画像をアップロードしてください", type=["jpg", "jpeg", "png"])
+
+# ============================
+# 画像が変わったら補正値をリセット
+# ============================
+if uploaded_file is not None:
+    if st.session_state.prev_image_name != uploaded_file.name:
+        st.session_state.prev_image_name = uploaded_file.name
+        st.session_state.r_gain = 1.0
+        st.session_state.g_gain = 1.0
+        st.session_state.b_gain = 1.0
+        st.session_state.severity = 1.0
 
 # ============================
 # 色覚タイプ選択
@@ -46,15 +75,16 @@ color_type = st.selectbox(
 # ============================
 st.subheader("細かい調整（数字が大きいほど色が強くなる）")
 col_r, col_g, col_b = st.columns(3)
-r_gain = col_r.slider("赤色", 0.0, 2.0, 1.0, 0.05)
-g_gain = col_g.slider("緑色", 0.0, 2.0, 1.0, 0.05)
-b_gain = col_b.slider("青色", 0.0, 2.0, 1.0, 0.05)
+
+r_gain = col_r.slider("赤色", 0.0, 2.0, st.session_state.r_gain, 0.05, key="r_gain")
+g_gain = col_g.slider("緑色", 0.0, 2.0, st.session_state.g_gain, 0.05, key="g_gain")
+b_gain = col_b.slider("青色", 0.0, 2.0, st.session_state.b_gain, 0.05, key="b_gain")
 
 # ============================
 # 重症度
 # ============================
 st.subheader("重症度（ここはなるべく１のまま上のスライダーだけで補正してほしいです）")
-severity = st.slider("重症度", 0.0, 1.0, 1.0, 0.05)
+severity = st.slider("重症度", 0.0, 1.0, st.session_state.severity, 0.05, key="severity")
 
 # ============================
 # 画像処理
@@ -65,7 +95,6 @@ if uploaded_file:
     if max(proc_img.size) > MAX_WIDTH:
         proc_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
 
-    # 日本語 → Machado用の英語キーへ変換
     cvd_map = {
         None: None,
         "赤色盲": "protanomaly",
@@ -108,7 +137,6 @@ if st.button("この補正値を保存する"):
         save_settings(username, data)
         st.success(f"{username} さんの新しい補正値を保存しました！")
 
-        # ダウンロード用JSON（ローカル保存用）
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
         st.download_button(
             label="この補正値をJSONでダウンロード",
