@@ -140,7 +140,7 @@ if st.button("この補正値を保存する"):
 
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
         st.download_button(
-            label="この補正値をJSONでダウンロード",
+            label="この補正値をで保存",
             data=json_str,
             file_name=f"{username}_{preset_name}.json",
             mime="application/json"
@@ -152,4 +152,5 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認（管理者用）")
 all_settings = load_settings()
 st.json(all_settings)
+
 
