@@ -76,15 +76,16 @@ color_type = st.selectbox(
 st.subheader("細かい調整（数字が大きいほど色が強くなる）")
 col_r, col_g, col_b = st.columns(3)
 
-r_gain = col_r.slider("赤色", 0.0, 2.0, st.session_state.r_gain, 0.05, key="r_gain")
-g_gain = col_g.slider("緑色", 0.0, 2.0, st.session_state.g_gain, 0.05, key="g_gain")
-b_gain = col_b.slider("青色", 0.0, 2.0, st.session_state.b_gain, 0.05, key="b_gain")
+r_gain = col_r.slider("赤色", 0.0, 2.0, 0.0, 0.05, key="r_gain")
+g_gain = col_g.slider("緑色", 0.0, 2.0, 0.0, 0.05, key="g_gain")
+b_gain = col_b.slider("青色", 0.0, 2.0, 0.05, 0.05, key="b_gain")
+
 
 # ============================
 # 重症度
 # ============================
 st.subheader("重症度（ここはなるべく１のまま上のスライダーだけで補正してほしいです）")
-severity = st.slider("重症度", 0.0, 1.0, st.session_state.severity, 0.05, key="severity")
+severity = st.slider("重症度", 0.0, 1.0, 0.0, 0.05, key="severity")
 
 # ============================
 # 画像処理
@@ -151,3 +152,4 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認（管理者用）")
 all_settings = load_settings()
 st.json(all_settings)
+
