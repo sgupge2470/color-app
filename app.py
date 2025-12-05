@@ -1,3 +1,5 @@
+init_db()
+
 import streamlit as st
 from PIL import Image
 from utils.image_processing import machado, rgb_gain
@@ -102,6 +104,7 @@ if st.button("この補正値を保存する"):
 st.subheader("全ユーザー補正値の確認")
 all_settings = load_settings(settings_path)
 st.json(all_settings)
+
 
 
 
