@@ -1,13 +1,8 @@
 import streamlit as st
 from PIL import Image
 from utils.image_processing import machado, rgb_gain
-from utils.storage import save_settings, get_user_presets, load_settings, init_db
+from utils.supabase_storage import save_preset, load_all_presets
 import json
-
-# ============================
-# SQLite 初期化（最重要）
-# ============================
-init_db()
 
 # ============================
 # セッション初期化（最重要）
@@ -76,16 +71,15 @@ color_type = st.selectbox(
 st.subheader("細かい調整（数字が大きいほど色が強くなる）")
 col_r, col_g, col_b = st.columns(3)
 
-r_gain = col_r.slider("赤色", 0.0, 2.0, 0.0, 0.05, key="r_gain")
-g_gain = col_g.slider("緑色", 0.0, 2.0, 0.0, 0.05, key="g_gain")
-b_gain = col_b.slider("青色", 0.0, 2.0, 0.05, 0.05, key="b_gain")
-
+r_gain = col_r.slider("赤色", 0.0, 2.0, st.session_state.r_gain, 0.05, key="r_gain")
+g_gain = col_g.slider("緑色", 0.0, 2.0, st.session_state.g_gain, 0.05, key="g_gain")
+b_gain = col_b.slider("青色", 0.0, 2.0, st.session_state.b_gain, 0.05, key="b_gain")
 
 # ============================
 # 重症度
 # ============================
 st.subheader("重症度（ここはなるべく１のまま上のスライダーだけで補正してほしいです）")
-severity = st.slider("重症度", 0.0, 1.0, 0.0, 0.05, key="severity")
+severity = st.slider("重症度", 0.0, 1.0, st.session_state.severity, 0.05, key="severity")
 
 # ============================
 # 画像処理
@@ -118,9 +112,9 @@ if uploaded_file:
         st.image(display_img, caption=f"{label(color_type)} + RGB補正", use_column_width=True)
 
 # ============================
-# 保存 & ダウンロード
+# 保存 & ダウンロード（Supabase対応）
 # ============================
-preset_name = st.text_input("補正値の名前（同じ名前の場合上書き保存されます）", "例：紅葉の補正値")
+preset_name = st.text_input("補正値の名前（同じ名前でも履歴として保存されます）", "例：紅葉の補正値")
 
 if st.button("この補正値を保存する"):
     if not username.strip():
@@ -135,23 +129,23 @@ if st.button("この補正値を保存する"):
             "青": b_gain,
         }
 
-        save_settings(username, data)
-        st.success(f"{username} さんの新しい補正値を保存しました！")
+        # ✅ Supabase に保存
+        save_preset(username, data)
 
+        st.success(f"{username} さんの補正値を Supabase に保存しました！（消えません）")
+
+        # ✅ JSON ダウンロード（個人バックアップ用）
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
         st.download_button(
-            label="この補正値をで保存",
+            label="この補正値をJSONでダウンロード（バックアップ用）",
             data=json_str,
             file_name=f"{username}_{preset_name}.json",
             mime="application/json"
         )
 
 # ============================
-# 管理者用：全ユーザー補正値の確認
+# 管理者用：全ユーザー補正値の確認（Supabase）
 # ============================
-st.subheader("全ユーザー補正値の確認（管理者用）")
-all_settings = load_settings()
+st.subheader("全ユーザー補正値の確認（Supabase）")
+all_settings = load_all_presets()
 st.json(all_settings)
-
-
-
