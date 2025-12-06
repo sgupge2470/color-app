@@ -1,7 +1,7 @@
 import streamlit as st
 from PIL import Image
 from utils.image_processing import machado, rgb_gain
-from utils.supabase_storage import save_preset, load_all_presets
+from utils.supabase_storage import save_preset, load_all_presets_grouped
 import json
 
 # ============================
@@ -151,6 +151,7 @@ from utils.supabase_storage import save_preset, load_all_presets_grouped
 st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 all_settings = load_all_presets_grouped()
 st.json(all_settings)
+
 
 
 
