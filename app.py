@@ -114,7 +114,7 @@ if uploaded_file:
 # ============================
 # 保存 & ダウンロード（Supabase対応）
 # ============================
-preset_name = st.text_input("補正値の名前（同じ名前でも履歴として保存されます）", "例：紅葉の補正値")
+preset_name = st.text_input("補正値の名前", "例：紅葉の補正値")
 
 if st.button("この補正値を保存する"):
     if not username.strip():
@@ -132,7 +132,7 @@ if st.button("この補正値を保存する"):
         # ✅ Supabase に保存
         save_preset(username, data)
 
-        st.success(f"{username} さんの補正値を Supabase に保存しました！（消えません）")
+        st.success(f"{username} さんの補正値を Supabase に保存しました！")
 
         # ✅ JSON ダウンロード（個人バックアップ用）
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
@@ -146,6 +146,10 @@ if st.button("この補正値を保存する"):
 # ============================
 # 管理者用：全ユーザー補正値の確認（Supabase）
 # ============================
-st.subheader("全ユーザー補正値の確認（Supabase）")
-all_settings = load_all_presets()
+from utils.supabase_storage import load_all_presets_grouped
+
+st.subheader("全ユーザー補正値の確認（ユーザーごと）")
+all_settings = load_all_presets_grouped()
 st.json(all_settings)
+
+
