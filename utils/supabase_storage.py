@@ -17,6 +17,28 @@ def save_preset(username, data):
         "b_gain": data["青"],
     }).execute()
 
-def load_all_presets():
+def load_all_presets_grouped():
     res = supabase.table("presets").select("*").execute()
-    return res.data
+    data = res.data
+
+    grouped = {}
+
+    for row in data:
+        username = row["username"]
+
+        preset = {
+            "名前": row["preset_name"],
+            "型": row["color_type"],
+            "重症度": row["severity"],
+            "赤": row["r_gain"],
+            "緑": row["g_gain"],
+            "青": row["b_gain"],
+            "作成日時": row["created_at"]
+        }
+
+        if username not in grouped:
+            grouped[username] = []
+
+        grouped[username].append(preset)
+
+    return grouped
