@@ -146,10 +146,11 @@ if st.button("この補正値を保存する"):
 # ============================
 # 管理者用：全ユーザー補正値の確認（Supabase）
 # ============================
-from utils.supabase_storage import load_all_presets_grouped
+from utils.supabase_storage import save_preset, load_all_presets_grouped
 
 st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 all_settings = load_all_presets_grouped()
 st.json(all_settings)
+
 
 
