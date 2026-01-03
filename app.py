@@ -65,18 +65,6 @@ color_type = st.selectbox(
     index=2
 )
 
-if uploaded_file:
-    src = Image.open(uploaded_file).convert("RGB")
-    proc_img = src.copy()
-    if max(proc_img.size) > MAX_WIDTH:
-        proc_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
-
-    cvd_map = {
-        None: None,
-        "赤色覚特性": "protanomaly",
-        "緑色覚特性": "deuteranomaly",
-        "青色覚特性": "tritanomaly"
-    }
 # ============================
 # RGB補正
 # ============================
@@ -97,6 +85,18 @@ severity = st.slider("シミュレーション強度", 0.0, 1.0, st.session_stat
 # 画像処理
 # ============================
 
+if uploaded_file:
+    src = Image.open(uploaded_file).convert("RGB")
+    proc_img = src.copy()
+    if max(proc_img.size) > MAX_WIDTH:
+        proc_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
+
+    cvd_map = {
+        None: None,
+        "赤色覚特性": "protanomaly",
+        "緑色覚特性": "deuteranomaly",
+        "青色覚特性": "tritanomaly"
+    }
 
     cvd_type = cvd_map[color_type]
 
