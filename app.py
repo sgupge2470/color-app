@@ -49,6 +49,26 @@ if uploaded_file is not None:
         st.session_state.severity = 1.0
 
 # ============================
+# 画像表示（常に2列・最上部）
+# ============================
+col1, col2 = st.columns(2)
+
+if uploaded_file:
+    src = Image.open(uploaded_file).convert("RGB")
+    proc_img = src.copy()
+    if max(proc_img.size) > MAX_WIDTH:
+        proc_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
+
+    with col1:
+        st.image(proc_img, caption="元の画像", use_column_width=True)
+else:
+    with col1:
+        st.info("ここに元画像が表示されます")
+
+with col2:
+    st.info("補正後画像がここに表示されます")
+
+# ============================
 # 色覚タイプ選択
 # ============================
 def label(name):
@@ -82,15 +102,9 @@ st.subheader("シミュレーション強度（上記以外の補正）")
 severity = st.slider("シミュレーション強度", 0.0, 1.0, st.session_state.severity, 0.05, key="severity")
 
 # ============================
-# 画像処理
+# 補正後画像更新（右列のみ）
 # ============================
-
 if uploaded_file:
-    src = Image.open(uploaded_file).convert("RGB")
-    proc_img = src.copy()
-    if max(proc_img.size) > MAX_WIDTH:
-        proc_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
-
     cvd_map = {
         None: None,
         "赤色覚特性": "protanomaly",
@@ -100,17 +114,18 @@ if uploaded_file:
 
     cvd_type = cvd_map[color_type]
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.image(proc_img, caption="元の画像", use_column_width=True)
-
     sim = machado(proc_img, cvd_type, severity)
     out = rgb_gain(sim, r_gain, g_gain, b_gain)
 
     display_img = out.copy()
     display_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
+
     with col2:
-        st.image(display_img, caption=f"{label(color_type)} + RGB補正", use_column_width=True)
+        st.image(
+            display_img,
+            caption=f"{label(color_type)} + RGB補正",
+            use_column_width=True
+        )
 
 # ============================
 # 保存 & ダウンロード（Supabase対応）
@@ -154,6 +169,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
