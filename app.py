@@ -134,7 +134,7 @@ if st.button("この補正値を保存する"):
 
         st.success(f"{username} さんの補正値をに保存しました！")
 
-        # ✅ JSON ダウンロード（個人バックアップ用）
+        """ ✅ JSON ダウンロード（個人バックアップ用）
         json_str = json.dumps(data, ensure_ascii=False, indent=2)
         st.download_button(
             label="この補正値をJSONでダウンロード（バックアップ用）",
@@ -142,15 +142,18 @@ if st.button("この補正値を保存する"):
             file_name=f"{username}_{preset_name}.json",
             mime="application/json"
         )
+        """
 
 # ============================
 # 管理者用：全ユーザー補正値の確認（Supabase）
 # ============================
+"""
 from utils.supabase_storage import save_preset, load_all_presets_grouped
 
 st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 all_settings = load_all_presets_grouped()
 st.json(all_settings)
+"""
 
 
 
