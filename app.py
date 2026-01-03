@@ -78,7 +78,7 @@ b_gain = col_b.slider("青色", 0.0, 2.0, st.session_state.b_gain, 0.05, key="b_
 # ============================
 # 重症度
 # ============================
-st.subheader("重症度（ここはなるべく１のまま上のスライダーだけで補正してほしいです）")
+st.subheader("重症度")
 severity = st.slider("重症度", 0.0, 1.0, st.session_state.severity, 0.05, key="severity")
 
 # ============================
@@ -153,6 +153,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
