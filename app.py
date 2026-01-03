@@ -34,7 +34,7 @@ MAX_WIDTH = 800
 # ユーザー管理
 # ============================
 st.subheader("ユーザー登録")
-username = st.text_input("名前を入力してください", "")
+username = st.text_input("名前（ニックネーム）を入力してください", "")
 uploaded_file = st.file_uploader("Browse files をクリックし画像を選択してください", type=["jpg", "jpeg", "png"])
 
 # ============================
@@ -59,7 +59,7 @@ def label(name):
     }[name]
 
 color_type = st.selectbox(
-    "色覚特性のタイプを選択してください",
+    "色覚特性のタイプ（選択すると画像が変化するので見え方に近いものを選択してください）",
     [None, "赤色覚特性", "緑色覚特性", "青色覚特性"],
     format_func=label,
     index=2
@@ -154,6 +154,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
