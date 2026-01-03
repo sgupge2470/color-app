@@ -61,12 +61,6 @@ if uploaded_file:
 
     with col1:
         st.image(proc_img, caption="元の画像", use_column_width=True)
-else:
-    with col1:
-        st.info("ここに元画像が表示されます")
-
-with col2:
-    st.info("補正後画像がここに表示されます")
 
 # ============================
 # 色覚タイプ選択
@@ -169,6 +163,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
