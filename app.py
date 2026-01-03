@@ -52,15 +52,15 @@ if uploaded_file is not None:
 # 色覚タイプ選択
 # ============================
 def label(name):
-    return "正常" if name is None else {
-        "赤色盲": "P型（赤色盲）",
-        "緑色盲": "D型（緑色盲）",
-        "青色盲": "T型（青色盲）"
+    return "特性なし" if name is None else {
+        "赤色覚特性": "P型（赤色覚特性）",
+        "緑色覚特性": "D型（緑色覚特性）",
+        "青色覚特性": "T型（青色覚特性）"
     }[name]
 
 color_type = st.selectbox(
     "色覚特性のタイプを選択してください",
-    [None, "赤色盲", "緑色盲", "青色盲"],
+    [None, "赤色覚特性", "緑色覚特性", "青色覚特性"],
     format_func=label,
     index=2
 )
@@ -75,9 +75,9 @@ if uploaded_file:
 
     cvd_map = {
         None: None,
-        "赤色盲": "protanomaly",
-        "緑色盲": "deuteranomaly",
-        "青色盲": "tritanomaly"
+        "赤色覚特性": "protanomaly",
+        "緑色覚特性": "deuteranomaly",
+        "青色覚特性": "tritanomaly"
     }
 
     cvd_type = cvd_map[color_type]
@@ -123,7 +123,7 @@ if st.button("この補正値を保存する"):
         data = {
             "名前": preset_name,
             "型": color_type,
-            "重症度": severity,
+            "シミュレーション強度": severity,
             "赤": r_gain,
             "緑": g_gain,
             "青": b_gain,
@@ -153,6 +153,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
