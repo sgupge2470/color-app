@@ -64,23 +64,6 @@ color_type = st.selectbox(
     format_func=label,
     index=2
 )
-
-# ============================
-# RGB補正
-# ============================
-st.subheader("細かい調整（数字が大きいほど色が強くなる）")
-col_r, col_g, col_b = st.columns(3)
-
-r_gain = col_r.slider("赤色", 0.0, 2.0, st.session_state.r_gain, 0.05, key="r_gain")
-g_gain = col_g.slider("緑色", 0.0, 2.0, st.session_state.g_gain, 0.05, key="g_gain")
-b_gain = col_b.slider("青色", 0.0, 2.0, st.session_state.b_gain, 0.05, key="b_gain")
-
-# ============================
-# 重症度
-# ============================
-st.subheader("重症度")
-severity = st.slider("重症度", 0.0, 1.0, st.session_state.severity, 0.05, key="severity")
-
 # ============================
 # 画像処理
 # ============================
@@ -110,6 +93,23 @@ if uploaded_file:
     display_img.thumbnail((MAX_WIDTH, MAX_WIDTH))
     with col2:
         st.image(display_img, caption=f"{label(color_type)} + RGB補正", use_column_width=True)
+
+# ============================
+# RGB補正
+# ============================
+st.subheader("細かい調整（数字が大きいほど色が強くなる）")
+col_r, col_g, col_b = st.columns(3)
+
+r_gain = col_r.slider("赤色", 0.0, 2.0, st.session_state.r_gain, 0.05, key="r_gain")
+g_gain = col_g.slider("緑色", 0.0, 2.0, st.session_state.g_gain, 0.05, key="g_gain")
+b_gain = col_b.slider("青色", 0.0, 2.0, st.session_state.b_gain, 0.05, key="b_gain")
+
+# ============================
+# 重症度
+# ============================
+st.subheader("重症度")
+severity = st.slider("重症度", 0.0, 1.0, st.session_state.severity, 0.05, key="severity")
+
 
 # ============================
 # 保存 & ダウンロード（Supabase対応）
@@ -153,6 +153,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
