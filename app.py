@@ -35,7 +35,7 @@ MAX_WIDTH = 800
 # ============================
 st.subheader("ユーザー登録")
 username = st.text_input("名前を入力してください", "")
-uploaded_file = st.file_uploader("画像をアップロードしてください", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Browse files をクリックし画像を選択してください", type=["jpg", "jpeg", "png"])
 
 # ============================
 # 画像が変わったら補正値をリセット
@@ -154,6 +154,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
