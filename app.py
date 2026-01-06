@@ -66,14 +66,15 @@ if uploaded_file:
 # 色覚タイプ選択
 # ============================
 def label(name):
-    return "緑色覚特性": "D型（緑色覚特性）" if name is None else {
+    return "特性なし" if name is None else {
         "赤色覚特性": "P型（赤色覚特性）",
+        "緑色覚特性": "D型（緑色覚特性）",
         "青色覚特性": "T型（青色覚特性）"
     }[name]
 
 color_type = st.selectbox(
     "色覚特性のタイプ（選択すると画像が変化するので見え方に近いものを選択してください）",
-    [None, "赤色覚特性", "緑色覚特性", "青色覚特性"],
+    ["赤色覚特性", "緑色覚特性", "青色覚特性"],
     format_func=label,
     index=2
 )
@@ -162,6 +163,7 @@ if st.button("この補正値を保存する"):
 #st.subheader("全ユーザー補正値の確認（ユーザーごと）")
 #all_settings = load_all_presets_grouped()
 #st.json(all_settings)
+
 
 
 
