@@ -29,7 +29,7 @@ def load_all_presets_grouped():
         preset = {
             "名前": row["preset_name"],
             "型": row["color_type"],
-            "重症度": row["severity"],
+            "シミュレーション強度": row["severity"],
             "赤": row["r_gain"],
             "緑": row["g_gain"],
             "青": row["b_gain"],
@@ -42,4 +42,5 @@ def load_all_presets_grouped():
         grouped[username].append(preset)
 
     return grouped
+
 
