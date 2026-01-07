@@ -11,7 +11,7 @@ def save_preset(username, data):
         "username": username,
         "preset_name": data["名前"],
         "color_type": data["型"],
-        "severity": data["重症度"],
+        "severity": data["シミュレーション強度"],
         "r_gain": data["赤"],
         "g_gain": data["緑"],
         "b_gain": data["青"],
@@ -42,3 +42,4 @@ def load_all_presets_grouped():
         grouped[username].append(preset)
 
     return grouped
+
